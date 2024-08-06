@@ -11,6 +11,12 @@ read USER_NAME
 echo -n "Enter Working user: ( $USER_NAME ) password:  " 
 read USER_PASS
 
-docker build -t $IMAGE_TAG --build-arg ROOT_PASS=$ROOT_PASS --build-arg USER_NAME=$USER_NAME --build-arg USER_PASS=$USER_PASS .
+docker build -t $IMAGE_TAG \
+    --build-arg ROOT_PASS=$ROOT_PASS \
+    --build-arg USER_NAME=$USER_NAME \
+    --build-arg USER_PASS=$USER_PASS \
+    --build-arg LOCAL_UID=$(id -u $USER) \
+    --build-arg LOCAL_GID=$(id -g $USER) \
+    .
 
 cd ../

@@ -21,12 +21,12 @@ RUN echo 'root:root' | chpasswd
 
 # ------------ Add locker user
 ARG USER_NAME="locker"
-ENV LOCKER_UID=9999
-ENV LOCKER_GID=$LOCKER_UID
+ARG LOCAL_UID="9999"
+ARG LOCAL_GID="9999"
 
 # Create the user of locker
-RUN groupadd --gid $LOCKER_GID ${USER_NAME} \
-    && useradd --uid $LOCKER_UID --gid $LOCKER_GID -s /usr/bin/bash -m ${USER_NAME} \
+RUN groupadd --gid $LOCAL_GID ${USER_NAME} \
+    && useradd --uid $LOCAL_UID --gid $LOCAL_GID -s /usr/bin/bash -m ${USER_NAME} \
     # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
     && apt-get update \
     && apt-get install -y sudo
@@ -41,12 +41,7 @@ RUN echo "${USER_NAME}":"${USER_PASS}" | chpasswd\
 # ********************************************************
 
 # [Optional] Set the default user. Omit if you want to keep the default as root.
-
-# ------------ Add Original User setting
-COPY init_uid.sh /usr/local/bin/init_uid.sh
-RUN chmod +x /usr/local/bin/init_uid.sh
-
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 
-CMD ["/usr/local/bin/init_uid.sh"]
+CMD ["bash"]
